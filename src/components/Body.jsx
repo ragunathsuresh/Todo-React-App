@@ -9,33 +9,18 @@ function Body() {
   ]);
 
   const [newTask, setNewTask] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const stored = localStorage.getItem("todoItems");
     if (stored) {
-      try {
-        setItems(JSON.parse(stored));
-      } catch (e) {
-        console.error("Invalid todoItems in localStorage");
-      }
+      setItems(JSON.parse(stored));
     }
   }, []);
 
   const saveItems = (updatedItems) => {
     setItems(updatedItems);
     localStorage.setItem("todoItems", JSON.stringify(updatedItems));
-  };
-
-  const remove = (id) => {
-    const updatedItems = items.filter((item) => item.id !== id);
-    saveItems(updatedItems);
-  };
-
-  const toggleComplete = (id) => {
-    const updatedItems = items.map((item) =>
-      item.id === id ? { ...item, completed: !item.completed } : item
-    );
-    saveItems(updatedItems);
   };
 
   const addTask = (e) => {
@@ -53,39 +38,62 @@ function Body() {
     setNewTask("");
   };
 
+  const remove = (id) => {
+    const updatedItems = items.filter((item) => item.id !== id);
+    saveItems(updatedItems);
+  };
+
+  const toggleComplete = (id) => {
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, completed: !item.completed } : item
+    );
+    saveItems(updatedItems);
+  };
+
+  const filteredItems = items.filter((item) =>
+    item.task.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <main className="max-w-3xl mx-auto px-6 py-8">
       <h2 className="text-2xl font-semibold mb-4 text-slate-800">
         Your To-Do List
       </h2>
 
-      {/* Add Task Form */}
-      <form onSubmit={addTask} className="flex gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <form onSubmit={addTask} className="flex gap-2 flex-1">
+          <input
+            type="text"
+            className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Add new task..."
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
+          >
+            Add
+          </button>
+        </form>
+
         <input
           type="text"
-          className="flex-1 border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          placeholder="Add a new task..."
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
+          className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+          placeholder="Search task..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-        <button
-          type="submit"
-          className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
-        >
-          Add
-        </button>
-      </form>
-
-      {/* List / Empty State */}
-      {items.length ? (
+      </div>
+      
+      {filteredItems.length ? (
         <ul className="space-y-4">
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <li
               key={item.id}
               className="flex items-center justify-between bg-white shadow-md px-4 py-3 rounded-xl"
             >
               <div className="flex items-center gap-3">
-                {/* Checkbox */}
                 <input
                   type="checkbox"
                   checked={item.completed}
@@ -93,7 +101,6 @@ function Body() {
                   className="w-5 h-5 accent-blue-500 cursor-pointer"
                 />
 
-                {/* Text with double-click toggle */}
                 <span
                   className={`text-base cursor-pointer ${
                     item.completed
@@ -106,11 +113,10 @@ function Body() {
                 </span>
               </div>
 
-              {/* Delete button */}
               <button
-                className="text-sm text-red-500 hover:text-red-700 transition"
+                className="text-red-500 hover:text-red-700 transition"
                 onClick={() => remove(item.id)}
-                title="Delete task"
+                title="Delete"
               >
                 <FaTrashRestore size={18} />
               </button>
@@ -119,7 +125,11 @@ function Body() {
         </ul>
       ) : (
         <div className="text-center text-gray-500 mt-10">
-          <p className="text-lg">No tasks available. Add a new task!</p>
+          <p className="text-lg">
+            {search
+              ? "No matching tasks found."
+              : "No tasks available. Add a new task!"}
+          </p>
         </div>
       )}
     </main>

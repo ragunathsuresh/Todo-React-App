@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 
 function Header() {
+  const [isOn, setIsOn] = useState(false);
+
   return (
     <header className="w-full bg-slate-900 text-white px-6 py-4 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* App Title */}
+     
         <h1 className="text-2xl font-bold tracking-wide">
           ✅ To-Do List Application
         </h1>
 
-        {/* Navigation */}
+        
         <nav>
           <ul className="flex gap-6 text-sm font-medium">
             <li className="hover:text-blue-400 cursor-pointer transition">
@@ -24,13 +26,24 @@ function Header() {
           </ul>
         </nav>
 
-        {/* Mode Toggle */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm">Mode</span>
-          <input
-            type="checkbox"
-            className="w-5 h-5 accent-blue-500 cursor-pointer"
-          />
+      
+        <div className="flex items-center gap-3">
+          <span className="text-sm">{isOn ? "ON" : "OFF"}</span>
+
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only"
+              checked={isOn}
+              onChange={() => setIsOn(!isOn)}
+            />
+            <div className="w-11 h-6 bg-gray-400 rounded-full transition peer-checked:bg-blue-500"></div>
+            <div
+              className={`absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition ${
+                isOn ? "translate-x-5" : ""
+              }`}
+            ></div>
+          </label>
         </div>
       </div>
     </header>
