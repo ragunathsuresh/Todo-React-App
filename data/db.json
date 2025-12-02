@@ -1,19 +1,6 @@
 {
   "items": [
-    {
-      "id": 1,
-      "task": "Buy groceries",
-      "completed": false
-    },
-    {
-      "id": 2,
-      "task": "Walk the dog",
-      "completed": true
-    },
-    {
-      "id": 3,
-      "task": "Read a book",
-      "completed": false
-    }
+    { "id": 1, "text": "Learn React", "completed": false },
+    { "id": 2, "text": "Build To-Do App", "completed": true }
   ]
 }
